@@ -1,92 +1,52 @@
-import { connection } from "../lib/connect.js";
+import roasterRepository from "../repositories/roasterRepository.js";
+import { getCurrentDate } from "../utils/getCurrentDate.js";
 
-function getTasks() {
-  return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM tasks";
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
+async function getTasks() {
+  const tasks = await roasterRepository.getTasks();
+  // Ordena las tareas por prioridad y duración
+  const tasksSortedByPriority = tasks.sort((task1, task2) => {
+    if (task1.id_priority !== task2.id_priority) {
+      return task1.id_priority - task2.id_priority;
+    }
+    return task1.duration - task2.duration;
   });
+  return tasksSortedByPriority;
 }
 
-function createTask(task) {
-  return new Promise((resolve, reject) => {
-    const query = "INSERT INTO tasks SET ?";
-    connection.query(query, task, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        console.log(results);
-        resolve({ id: results.insertId, ...task });
-      }
-    });
-  });
+async function createTask(task) {
+  task.id_status = 1;
+  return await roasterRepository.createTask(task);
 }
 
-function updateTask({
-  taskId,
-  name,
-  description,
-  beginDate,
-  endDate,
-  duration,
-  priority,
-  status,
-}) {
-  return new Promise((resolve, reject) => {
-    const query =
-      "UPDATE taks SET name = ?, description = ?, beginDate = ?, endDate = ?, duration = ?, id_priority = ?, id_status = ? WHERE id = ?";
-    connection.query(
-      query,
-      [
-        name,
-        description,
-        beginDate,
-        endDate,
-        duration,
-        priority,
-        status,
-        taskId,
-      ],
-      (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results.affectedRows);
-        }
-      }
-    );
-  });
+async function getTaskById(id) {
+  return await roasterRepository.getTaskById(id);
 }
 
-function deleteTask(taskId) {
-  return new Promise((resolve, reject) => {
-    const query = "DELETE FROM tasks WHERE id = ?";
-    connection.query(query, taskId, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results.affectedRows);
-      }
-    });
-  });
+async function deleteTask(id) {
+  return await roasterRepository.deleteTask(id);
 }
 
-function getTaskById(taskId) {
-  return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM tasks WHERE id = ?";
-    connection.query(query, taskId, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results[0]);
-      }
-    });
-  });
+async function updateTask(newTask) {
+  const oldTask = await getTaskById(newTask.id);
+  newTask.beginDate = oldTask.beginDate;
+  newTask.endDate = oldTask.endDate;
+  if (newTask.id_status === 1) {
+    newTask.beginDate = null;
+    newTask.endDate = null;
+  }
+
+  if (newTask.id_status === 2) {
+    newTask.endDate = null;
+    if (oldTask.id_status === 1) {
+      newTask.beginDate = getCurrentDate();
+    }
+  }
+  if (newTask.id_status === 3 && oldTask.id_status === 2) {
+    newTask.beginDate = oldTask.beginDate;
+    newTask.endDate = getCurrentDate();
+  }
+  console.log(newTask);
+  return await roasterRepository.updateTask(newTask);
 }
 
 export default { getTasks, getTaskById, createTask, updateTask, deleteTask };

@@ -27,7 +27,7 @@ router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const task = await roasterService.getTaskById(id);
     if (task) {
-      res.json({ task });
+      res.json(task);
     } else {
       res.status(404).json({ error: "Task not found" });
     }
@@ -43,7 +43,10 @@ router.put("/:id", async (req, res) => {
     if (task.id !== id) {
       res.status(400).json({ error: "Id param must be equal to taskId" });
     } else {
-      const updatedRows = await roasterService.updateTask({ id, ...task });
+      const updatedRows = await roasterService.updateTask({
+        taskId: id,
+        ...task,
+      });
       if (updatedRows > 0) {
         res.status(200).json({ message: "tweet updated successfully" });
       } else {

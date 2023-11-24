@@ -10,5 +10,5 @@ app.use(express.json());
 app.use("/roaster", router);
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`server listenting on http://localhost:${process.env.PORT}`);
+  console.log(`server listening on http://localhost:${process.env.PORT}`);
 });
