@@ -1,9 +1,9 @@
 import express from "express";
-import roasterService from "../services/roasterService.js";
+import roasterService from "../services/taskService.js";
 
-export const router = express.Router();
+export const taskRouter = express.Router();
 
-router.get("/", async (req, res) => {
+taskRouter.get("/", async (req, res) => {
   try {
     const tasks = await roasterService.getTasks();
     res.json({ tasks });
@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+taskRouter.post("/", async (req, res) => {
   try {
     const task = req.body;
     const result = await roasterService.createTask(task);
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+taskRouter.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const task = await roasterService.getTaskById(id);
@@ -36,7 +36,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+taskRouter.put("/:id", async (req, res) => {
   try {
     const task = req.body;
     const { id } = req.body;
@@ -58,7 +58,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+taskRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const deletedRows = await roasterService.deleteTask(id);

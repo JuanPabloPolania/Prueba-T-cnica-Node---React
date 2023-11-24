@@ -1,8 +1,8 @@
-import roasterRepository from "../repositories/roasterRepository.js";
+import taskRepository from "../repositories/taskRepository.js";
 import { getCurrentDate } from "../utils/getCurrentDate.js";
 
 async function getTasks() {
-  const tasks = await roasterRepository.getTasks();
+  const tasks = await taskRepository.getTasks();
   // Ordena las tareas por prioridad y duración
   const tasksSortedByPriority = tasks.sort((task1, task2) => {
     if (task1.id_priority !== task2.id_priority) {
@@ -15,15 +15,15 @@ async function getTasks() {
 
 async function createTask(task) {
   task.id_status = 1;
-  return await roasterRepository.createTask(task);
+  return await taskRepository.createTask(task);
 }
 
 async function getTaskById(id) {
-  return await roasterRepository.getTaskById(id);
+  return await taskRepository.getTaskById(id);
 }
 
 async function deleteTask(id) {
-  return await roasterRepository.deleteTask(id);
+  return await taskRepository.deleteTask(id);
 }
 
 async function updateTask(newTask) {
@@ -46,7 +46,7 @@ async function updateTask(newTask) {
     newTask.endDate = getCurrentDate();
   }
   console.log(newTask);
-  return await roasterRepository.updateTask(newTask);
+  return await taskRepository.updateTask(newTask);
 }
 
 export default { getTasks, getTaskById, createTask, updateTask, deleteTask };

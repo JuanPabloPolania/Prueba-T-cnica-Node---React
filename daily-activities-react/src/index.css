@@ -25,6 +25,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
+  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -34,7 +35,10 @@ h1 {
   line-height: 1.1;
 }
 
-button {
+button,
+input,
+textarea,
+select {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -53,6 +57,21 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input,
+textarea,
+select {
+  background: #acacac;
+  border-radius: 4px;
+  cursor: default;
+  border: 1px solid #9c9c9c;
+  display: block;
+  width: 90%;
+  margin-bottom: 32px;
+}
+select {
+  width: 100%;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -62,6 +81,6 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #b4b4b4;
   }
 }
