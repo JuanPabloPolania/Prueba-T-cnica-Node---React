@@ -1,0 +1,3 @@
+-- Crear imagen de Node y React
+Situarse sobre cada proyecto, y sobre la raiz del proyecto ejecutar "docker build -t [image-name] ."
+Ej: "docker build -t backend ."

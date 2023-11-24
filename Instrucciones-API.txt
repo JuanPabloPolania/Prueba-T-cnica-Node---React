@@ -1,0 +1,21 @@
+El API Rest cuenta con una ruta prefija "/roaster"
+Hay 3 routers, cada uno para las tablas creadas
+Task -> "/tasks"
+Priorities -> "/priorities"
+Status -> "/status"
+
+-- Tareas
+El router de tareas cuenta con todas las acciones CRUD, incluyendo:
+ > get("/") -> obtiene todas las tareas ordenadas por prioridad y duración
+ > get("/:id") -> obtiene una tarea específica
+ > post("/") -> crea una tarea asignandole el estado 1
+ > put("/:id") -> actualiza una tarea, poniendo automáticamente la hora de inicio y fin de la tarea de acuerdo a los estados
+ > delete("/:id") -> elimina una tarea de acuerdo al id espeficicado
+
+-- Prioridades
+El router de prioridades permite obtener todas las prioridades de la base de datos:
+ > get("/") -> obtiene todas las prioridades
+
+-- Estados
+El router de estados permite obtener todos los estados de la base de datos:
+ > get("/") -> obtiene todas los estados

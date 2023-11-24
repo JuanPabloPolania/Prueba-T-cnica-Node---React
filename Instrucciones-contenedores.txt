@@ -1,0 +1,25 @@
+-- Docker Network
+1. Crear una red para conectar los contenedores, usando el comando "docker network create [network-name]"
+Ej: "docker network create fullstack-app"
+
+-- Contenedor MySQL
+1. Crear el contenedor de MySQL a través de la imagen "mysql/mysql-server:latest", usando el comando docker run y conectándolo a la red creada.
+Ej: "docker run --name=mysqldock -d --network=fullstack-app mysql/mysql-server:latest"
+2. Obtener la contraseña generada usando docker logs, buscando el log GENERATED ROOT PASSWORD
+Ej: "docker logs mysqldock"
+3. Entrar en la consola del contenedor usando "docker exec -it [container_name] bash"
+Ej: "docker exec -it mysqldock bash"
+4. Iniciar sesión en MySQL usando el comando mysql -u root -p y la contraseña generada.
+5. Crear el usuario root que permita conexiones desde cualquier host, poniendo la contraseña con la cual se conectará la aplicación API Rest
+   usando el comando "CREATE USER 'root'@'%' IDENTIFIED BY 'password';"
+6. Otorgar todos los privilegios al usuario creado con el comando " GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+7. Crear la base de datos usando "CREATE DATABASE [db-name]"
+Ej: "CREATE DATABASE TORREFACTORA"
+
+-- Contenedor Node
+1. Crear el contenedor de Node usando el comando "docker run" y conectándolo a la red creada.
+Ej: "docker run --name nodeapp -dp 3000:3000 --network=fullstack-app backend
+
+-- Contenedor React
+1. Crear el contenedor de React usando el comando "docker run" y mapeando los puertos del host al contenedor
+Ej: "docker run --name=torrefactora-front  -dp 80:80/tcp --network=fullstack-app front"
