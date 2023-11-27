@@ -45,7 +45,6 @@ async function updateTask(newTask) {
     newTask.beginDate = oldTask.beginDate;
     newTask.endDate = getCurrentDate();
   }
-  console.log(newTask);
   return await taskRepository.updateTask(newTask);
 }
 

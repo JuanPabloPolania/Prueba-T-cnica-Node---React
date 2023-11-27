@@ -20,7 +20,6 @@ function createTask(task) {
       if (error) {
         reject(error);
       } else {
-        console.log(results);
         resolve({ id: results.insertId, ...task });
       }
     });

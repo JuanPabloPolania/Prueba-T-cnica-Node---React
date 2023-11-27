@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import TaskForm from "./components/TaskForm";
 import Task from "./components/Task";
@@ -8,8 +8,21 @@ function App() {
 
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const [error, setError] = useState();
+  const [taskToUpdate, setTaskToUpdate] = useState();
+  const setTaskUpdate = (task) => {
+    const updateTask = {
+      id: task.id,
+      name: task.name,
+      description: task.description,
+      duration: task.duration,
+      id_priority: task.id_priority,
+      id_status: task.id_status,
+    };
+    setTaskToUpdate(updateTask);
+  };
   async function getTasks() {
     try {
       const response = await fetch(
@@ -18,8 +31,6 @@ function App() {
       const { tasks } = await response.json();
       setTasks(tasks);
     } catch (error) {
-      console.log(error);
-
       setError(error);
     } finally {
       setIsLoading(false);
@@ -33,7 +44,7 @@ function App() {
       <main>
         <aside>
           <h2>Gestión y control de actividades diarias</h2>
-          <TaskForm onSubmit={getTasks} />
+          <TaskForm onSubmit={getTasks} taskToUpdate={taskToUpdate} />
         </aside>
         <section>
           <h2>Lista de elementos</h2>
@@ -45,19 +56,26 @@ function App() {
                 <th>Duración</th>
                 <th>Prioridad</th>
                 <th>Estado</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
 
             <tbody>
               {tasks.length === 0 ? (
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={5} style={{ textAlign: "center", opacity: 0.5 }}>
                     <strong>No hay elementos en la lista.</strong>
                   </td>
                 </tr>
               ) : (
                 tasks.map((task) => (
-                  <Task onDelete={getTasks} task={task} key={task.id} />
+                  <Task
+                    onDelete={getTasks}
+                    task={task}
+                    key={task.id}
+                    onUpdate={setTaskUpdate}
+                  />
                 ))
               )}
             </tbody>

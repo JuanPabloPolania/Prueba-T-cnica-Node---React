@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const TaskForm = ({ onSubmit }) => {
+const TaskForm = ({ onSubmit, taskToUpdate = undefined }) => {
   const env = import.meta.env;
   const { register, handleSubmit, reset } = useForm();
   const [priorities, setPriorities] = useState([]);
   const [isPrioritiesLoading, setIsPrioritiesLoading] = useState(true);
   const [status, setStatus] = useState([]);
   const [isStatusLoading, setIsStatusLoading] = useState(true);
-
   const [error, setError] = useState();
   useEffect(() => {
     async function getPriorities() {
@@ -42,8 +41,11 @@ const TaskForm = ({ onSubmit }) => {
       }
     }
     getPriorities();
-    getStatus();
-  }, []);
+    if (taskToUpdate) {
+      reset(taskToUpdate);
+      getStatus();
+    }
+  }, [taskToUpdate]);
 
   const getPriorityOption = () => {
     const options = priorities.map((priority) => (
@@ -77,17 +79,31 @@ const TaskForm = ({ onSubmit }) => {
     data.duration = Number(data.duration);
     data.id_priority = Number(data.id_priority);
     data.id_status = Number(data.id_status);
-    const response = await fetch(
-      `${env.VITE_API_REST_URL}${env.VITE_TASKS_ENDPOINT}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }
-    );
+    let response;
+    if (typeof taskToUpdate !== "undefined") {
+      response = await fetch(
+        `${env.VITE_API_REST_URL}${env.VITE_TASKS_ENDPOINT}/${taskToUpdate.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+    } else {
+      response = await fetch(
+        `${env.VITE_API_REST_URL}${env.VITE_TASKS_ENDPOINT}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
+    }
+
     if (response.ok) {
       onSubmit();
-      reset();
+      console.log("Reset values");
+      reset({ name: "", description: "", duration: "" });
     }
   };
 
@@ -105,6 +121,7 @@ const TaskForm = ({ onSubmit }) => {
   };
 
   const renderStatus = () => {
+    if (typeof taskToUpdate === "undefined") return;
     if (isStatusLoading) return <span>Cargando estados...</span>;
     if (error) return <span>Ha ocurrido un error</span>;
     return (
